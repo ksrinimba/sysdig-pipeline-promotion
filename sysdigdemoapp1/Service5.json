@@ -1,7 +1,5 @@
 {
  "application": "sysdigdemoapp1",
- "id": "4f244e10-9439-492d-a91d-58c3a4c5979c",
- "index": 3,
  "keepWaitingPipelines": false,
  "lastModifiedBy": "admin",
  "limitConcurrent": true,
