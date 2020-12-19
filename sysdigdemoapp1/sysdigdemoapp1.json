@@ -1,0 +1,12 @@
+{
+ "accounts": "staging,sysdigstg,target-aks-cluster,target-livemanifest",
+ "cloudProviders": "kubernetes",
+ "email": "anoop@opsmx.io",
+ "instancePort": 80,
+ "lastModifiedBy": "admin",
+ "name": "sysdigdemoapp1",
+ "platformHealthOnly": true,
+ "trafficGuards": [],
+ "updateTs": "1608196835000",
+ "user": "admin"
+}

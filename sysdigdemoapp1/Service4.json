@@ -1,0 +1,73 @@
+{
+ "application": "sysdigdemoapp1",
+ "id": "4f244e10-9439-492d-a91d-58c3a4c5979c",
+ "index": 3,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "admin",
+ "limitConcurrent": true,
+ "name": "Service4",
+ "parameterConfig": [
+  {
+   "default": "target-aks-cluster",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "Account",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  },
+  {
+   "default": "sysdigdeploy",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "NameSpace",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  }
+ ],
+ "spelEvaluator": "v4",
+ "stages": [
+  {
+   "account": "${parameters.Account}",
+   "cloudProvider": "kubernetes",
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "01a00ef8-9a13-4a1f-8313-1a7d4d7d3416",
+    "name": "kubedeploys/opsmx-basedeploy.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/kubedeploys/opsmx-basedeploy.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "moniker": {
+    "app": "sysdigdemoapp1"
+   },
+   "name": "Deploy (Manifest)",
+   "namespaceOverride": "${parameters.NameSpace}",
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "artifact",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  }
+ ],
+ "triggers": [],
+ "updateTs": "1608228459000"
+}

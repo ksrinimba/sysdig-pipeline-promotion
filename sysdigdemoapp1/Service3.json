@@ -1,0 +1,117 @@
+{
+ "application": "sysdigdemoapp1",
+ "id": "a6c6d06f-a64f-4f12-a1c9-5d2d2082969a",
+ "index": 2,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "admin",
+ "limitConcurrent": true,
+ "name": "Service3",
+ "parameterConfig": [
+  {
+   "default": "target-aks-cluster",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "Account",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  },
+  {
+   "default": "sysdigdeploy",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "NameSpace",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  }
+ ],
+ "spelEvaluator": "v4",
+ "stages": [
+  {
+   "account": "${parameters.Account}",
+   "cloudProvider": "kubernetes",
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "2a4de1ba-74a4-4147-8790-ab324d5a9a6b",
+    "name": "deploys/blue-green.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/deploys/blue-green.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "moniker": {
+    "app": "sysdigdemoapp1"
+   },
+   "name": "Deploy-Service3",
+   "namespaceOverride": "${parameters.NameSpace}",
+   "refId": "1",
+   "requisiteStageRefIds": [
+    "3"
+   ],
+   "skipExpressionEvaluation": false,
+   "source": "artifact",
+   "stageEnabled": {
+    "expression": "${#stage(\"Policy Stage\")[\"Status\"].toString() == \"SUCCEEDED\"} or #judgement('Manual Judgment') == 'Deploy'",
+    "type": "expression"
+   },
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "alias": "preconfiguredWebhook",
+   "completeOtherBranchesThenFail": false,
+   "continuePipeline": true,
+   "failPipeline": false,
+   "name": "Policy Stage",
+   "parameterValues": {
+    "OPA_POLICYPATH": "/v1/data/opa/pipelines/datetimeslot",
+    "POLICY_PROXY": "http://oes-sapor.oes33:8085"
+   },
+   "refId": "2",
+   "requisiteStageRefIds": [],
+   "statusUrlResolution": "getMethod",
+   "type": "PolicyStage"
+  },
+  {
+   "failPipeline": true,
+   "instructions": "Policy Failed. Do you want to Deploy?",
+   "judgmentInputs": [
+    {
+     "value": "Deploy"
+    },
+    {
+     "value": "Reject"
+    }
+   ],
+   "name": "Manual Judgment",
+   "notifications": [],
+   "refId": "3",
+   "requisiteStageRefIds": [
+    "2"
+   ],
+   "stageEnabled": {
+    "expression": "${#stage(\"Policy Stage\")[\"status\"].toString() == \"FAILED_CONTINUE\"}",
+    "type": "expression"
+   },
+   "type": "manualJudgment"
+  }
+ ],
+ "triggers": [],
+ "updateTs": "1608320117000"
+}

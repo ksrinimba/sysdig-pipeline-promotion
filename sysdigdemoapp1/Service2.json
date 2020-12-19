@@ -1,0 +1,73 @@
+{
+ "application": "sysdigdemoapp1",
+ "id": "f5d8fae6-a07c-460f-b95c-8ca3eca684f1",
+ "index": 1,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "admin",
+ "limitConcurrent": true,
+ "name": "Service2",
+ "parameterConfig": [
+  {
+   "default": "target-aks-cluster",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "Account",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  },
+  {
+   "default": "sysdigdeploy",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "NameSpace",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  }
+ ],
+ "spelEvaluator": "v4",
+ "stages": [
+  {
+   "account": "${parameters.Account}",
+   "cloudProvider": "kubernetes",
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "793a7907-f11f-497c-b5a2-489447521fd8",
+    "name": "deploys/simple-deploy.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/deploys/simple-deploy.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "moniker": {
+    "app": "sysdigdemoapp1"
+   },
+   "name": "Deploy-Service2",
+   "namespaceOverride": "${parameters.NameSpace}",
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "artifact",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  }
+ ],
+ "triggers": [],
+ "updateTs": "1608228388000"
+}

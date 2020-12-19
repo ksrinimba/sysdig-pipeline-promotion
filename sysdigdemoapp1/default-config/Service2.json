@@ -1,0 +1,6 @@
+{
+  "Parameters": {
+    "Account": "target-aks-cluster",
+    "NameSpace": "sysdigdeploy"
+  }
+}

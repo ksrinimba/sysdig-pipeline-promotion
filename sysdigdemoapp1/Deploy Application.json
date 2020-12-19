@@ -1,0 +1,241 @@
+{
+ "application": "sysdigdemoapp1",
+ "id": "a6ab978d-ec6b-4104-833c-9ffe1e4b7ee4",
+ "index": 0,
+ "keepWaitingPipelines": false,
+ "lastModifiedBy": "admin",
+ "limitConcurrent": true,
+ "name": "Deploy Application",
+ "parameterConfig": [
+  {
+   "default": "target-aks-cluster",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "Account",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  },
+  {
+   "default": "sysdigdeploy",
+   "description": "",
+   "hasOptions": false,
+   "label": "",
+   "name": "NameSpace",
+   "options": [
+    {
+     "value": ""
+    }
+   ],
+   "pinned": false,
+   "required": false
+  }
+ ],
+ "spelEvaluator": "v4",
+ "stages": [
+  {
+   "account": "${parameters.Account}",
+   "cloudProvider": "kubernetes",
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "6adb7ccb-e044-4844-8d86-7ba180c1816e",
+    "name": "kubedeploys/restapp-container.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/kubedeploys/restapp-container.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "moniker": {
+    "app": "sysdigdemoapp1"
+   },
+   "name": "Deploy-Service1",
+   "namespaceOverride": "${parameters.NameSpace}",
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "artifact",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "account": "${parameters.Account}",
+   "alias": "runJob",
+   "application": "sysdigdemoapp1",
+   "cloudProvider": "kubernetes",
+   "credentials": "target-aks-cluster",
+   "manifest": {
+    "apiVersion": "batch/v1",
+    "kind": "Job",
+    "metadata": {
+     "labels": {
+      "spinnakerlabel": "welcome-job"
+     },
+     "name": "welcomejob"
+    },
+    "spec": {
+     "backoffLimit": 0,
+     "template": {
+      "spec": {
+       "containers": [
+        {
+         "command": [
+          "bash",
+          "/tmp/initscript/run.sh"
+         ],
+         "image": "gradle:6.2.2-jdk8",
+         "name": "gitmavenstage",
+         "volumeMounts": [
+          {
+           "mountPath": "/tmp/initscript/",
+           "name": "initscript"
+          }
+         ]
+        }
+       ],
+       "restartPolicy": "Never",
+       "volumes": [
+        {
+         "configMap": {
+          "defaultMode": 420,
+          "name": "welcome-script"
+         },
+         "name": "initscript"
+        }
+       ]
+      }
+     }
+    }
+   },
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "49f79d8c-5e3a-4527-800f-63ef201537fb",
+    "name": "kubedeploys/DB-Migrate.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/kubedeploys/DB-Migrate.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "name": "DB Migrate",
+   "refId": "2",
+   "requisiteStageRefIds": [
+    "3"
+   ],
+   "source": "artifact",
+   "type": "runJobManifest"
+  },
+  {
+   "account": "${parameters.Account}",
+   "cloudProvider": "kubernetes",
+   "manifestArtifact": {
+    "artifactAccount": "opsmxdemo_account",
+    "id": "5ac55413-05a5-4c91-b440-1466c61fb93c",
+    "name": "kubedeploys/DB-Setup.yml",
+    "reference": "https://api.github.com/repos/OpsMx/restapp/contents/kubedeploys/DB-Setup.yml",
+    "type": "github/file",
+    "version": "master"
+   },
+   "manifests": [
+    {
+     "apiVersion": "v1",
+     "data": {
+      "run.sh": "#!/bin/bash\necho Welcome to OpsMx\n"
+     },
+     "kind": "ConfigMap",
+     "metadata": {
+      "annotations": {
+       "strategy.spinnaker.io/versioned": "false"
+      },
+      "name": "welcome-script"
+     }
+    }
+   ],
+   "moniker": {
+    "app": "sysdigdemoapp1"
+   },
+   "name": "DB Migrate Setup",
+   "namespaceOverride": "${parameters.NameSpace}",
+   "refId": "3",
+   "requisiteStageRefIds": [
+    "1"
+   ],
+   "skipExpressionEvaluation": false,
+   "source": "artifact",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "application": "sysdigdemoapp1",
+   "failPipeline": true,
+   "name": "Deploy-Service2",
+   "pipeline": "f5d8fae6-a07c-460f-b95c-8ca3eca684f1",
+   "pipelineParameters": {
+    "Account": "${parameters.Account}",
+    "NameSpace": "${parameters.NameSpace}"
+   },
+   "refId": "4",
+   "requisiteStageRefIds": [
+    "2"
+   ],
+   "type": "pipeline",
+   "waitForCompletion": true
+  },
+  {
+   "application": "sysdigdemoapp1",
+   "failPipeline": true,
+   "name": "Deploy-Service3",
+   "pipeline": "a6c6d06f-a64f-4f12-a1c9-5d2d2082969a",
+   "pipelineParameters": {
+    "Account": "${parameters.Account}",
+    "NameSpace": "${parameters.NameSpace}"
+   },
+   "refId": "5",
+   "requisiteStageRefIds": [
+    "4"
+   ],
+   "type": "pipeline",
+   "waitForCompletion": true
+  },
+  {
+   "application": "sysdigdemoapp1",
+   "failPipeline": true,
+   "name": "Deploy-Service4",
+   "pipeline": "4f244e10-9439-492d-a91d-58c3a4c5979c",
+   "pipelineParameters": {
+    "Account": "${parameters.Account}",
+    "NameSpace": "${parameters.NameSpace}"
+   },
+   "refId": "6",
+   "requisiteStageRefIds": [
+    "4"
+   ],
+   "type": "pipeline",
+   "waitForCompletion": true
+  }
+ ],
+ "triggers": [
+  {
+   "branch": "master",
+   "enabled": false,
+   "project": "OpsMx",
+   "slug": "restapp",
+   "source": "github",
+   "type": "git"
+  }
+ ],
+ "updateTs": "1608318431000"
+}
